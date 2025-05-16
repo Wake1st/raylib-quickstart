@@ -7,5 +7,13 @@
 		"**/.DS_Store": true,
 		"**/*.o": true,
 		"**/*.exe": true,
+	},
+	"files.associations": {
+		"*html": "html",
+		"resource_dir.h": "c",
+		"ios": "cpp",
+		"type_traits": "cpp",
+		"xstring": "cpp",
+		"xutility": "cpp"
 	}
 }
