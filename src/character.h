@@ -1,10 +1,23 @@
-#include "raylib.h"
+#pragma once
 
-typedef struct Character
+#include "raylib.h"
+#include "raymath.h"
+
+#define CLOSENESS 0.001f
+#define SPEED 0.4f
+
+class Character
 {
+public:
   bool isMoving;
+  int movesRemaining;
+
+  Character(Vector3 origin, int totalMoves);
+  void adjustPosition(float x, float y);
+  void move();
+  Vector3 getPosition();
+
+private:
   Vector3 currentPosition;
   Vector3 targetPosition;
-  int movesRemaining;
-  void (*move)(float, float);
-} Character;
+};

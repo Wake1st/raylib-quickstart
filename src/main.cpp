@@ -18,8 +18,10 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 
 #include "resource_dir.h" // utility header for SearchAndSetResourceDir
 
-#define CLOSENESS 0.001f
-#define SPEED 0.4f
+inline const char *const BoolToString(bool b)
+{
+	return b ? "true" : "false";
+}
 
 int main()
 {
@@ -34,6 +36,7 @@ int main()
 
 	// setup text
 	char moveText[20];
+	char debugText[64];
 
 	// setup a 3D camera
 	Vector3 originPoint = Vector3{0.0f, 0.0f, 0.0f};
@@ -48,14 +51,15 @@ int main()
 	float gridSize = 2.0f;
 
 	// create a character
-	Character character = {0};
-	character.isMoving = false;
-	character.currentPosition = originPoint;
-	character.targetPosition = originPoint;
-	character.movesRemaining = 18;
+	Character character(originPoint, 32);
 
 	// input handler
 	InputHandler inputs = InputHandler();
+
+	// command storage
+	Command *commands[COMMAND_COUNT];
+	int cmdIndex = 0;
+	int cmdEndex = 0;
 
 	// game loop
 	while (!WindowShouldClose()) // run the loop untill the user presses ESCAPE or presses the Close button on the window
@@ -63,17 +67,7 @@ int main()
 		//	-	-	-	-	-	-	-	-	UPDATE	-	-	-	-	-	-	-	-
 		if (character.isMoving)
 		{
-			character.currentPosition = Vector3Lerp(
-					character.currentPosition,
-					character.targetPosition,
-					SPEED);
-
-			float distance = Vector3Distance(character.currentPosition, character.targetPosition);
-			if (distance < CLOSENESS)
-			{
-				character.currentPosition = character.targetPosition;
-				character.isMoving = false;
-			}
+			character.move();
 		}
 		else if (character.movesRemaining > 0)
 		{
@@ -81,8 +75,39 @@ int main()
 			if (command)
 			{
 				command->execute(&character);
-				character.isMoving = true;
-				character.movesRemaining--;
+
+				commands[cmdIndex++] = command;
+				if (cmdIndex > cmdEndex)
+				{
+					// ensure we know how high the commands go
+					cmdEndex = cmdIndex;
+				}
+				else if (cmdIndex < cmdEndex)
+				{
+					// we must remove all higher up commands
+					for (int i = cmdIndex; i < cmdEndex; i++)
+					{
+						commands[i] = nullptr;
+					}
+				}
+			}
+
+			//	check for undo and redo
+			if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_Z) && cmdIndex > 0)
+			{
+				Command *undoCommand = commands[--cmdIndex];
+				if (undoCommand)
+				{
+					undoCommand->undo(&character);
+				}
+			}
+			else if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_Y) && cmdIndex < cmdEndex)
+			{
+				Command *redoCommand = commands[cmdIndex++];
+				if (redoCommand)
+				{
+					redoCommand->execute(&character);
+				}
 			}
 		}
 
@@ -93,17 +118,20 @@ int main()
 		ClearBackground(DARKGREEN);
 
 		BeginMode3D(mainCamera);
-
-		DrawCube(character.currentPosition, gridSize, gridSize, gridSize, PURPLE);
-
+		DrawCube(character.getPosition(), gridSize, gridSize, gridSize, PURPLE);
 		DrawGrid(10, 1.0f);
-
 		EndMode3D();
 
 		// draw some text using the default font
-		DrawFPS(20, 10);
+		sprintf(debugText, "ctrl: %s\tz: %s\ty: %s",
+						BoolToString(IsKeyDown(KEY_LEFT_CONTROL)),
+						BoolToString(IsKeyDown(KEY_Z)),
+						BoolToString(IsKeyDown(KEY_Y)));
+		DrawText(debugText, 20, 20, 20, LIGHTGRAY);
+
+		DrawFPS(20, 40);
 		sprintf(moveText, "Moves Remaining: %d", character.movesRemaining);
-		DrawText(moveText, 20, 40, 20, WHITE);
+		DrawText(moveText, 20, 60, 20, WHITE);
 
 		// end the frame and get ready for the next one  (display frame, poll input, etc...)
 		EndDrawing();
