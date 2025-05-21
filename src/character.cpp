@@ -1,10 +1,9 @@
 #include "character.h"
 
-Character::Character(Vector3 origin, int totalMoves)
+Character::Character(Vector3 origin)
 {
   currentPosition = origin;
   targetPosition = origin;
-  movesRemaining = totalMoves;
   isMoving = false;
 }
 

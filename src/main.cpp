@@ -15,6 +15,7 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 #include "character.h"
 #include "command.h"
 #include "input.h"
+#include "story_manager.h"
 
 #include "resource_dir.h" // utility header for SearchAndSetResourceDir
 
@@ -50,66 +51,26 @@ int main()
 	// grid settings
 	float gridSize = 2.0f;
 
-	// create a character
-	Character character(originPoint, 32);
+	// // create a character
+	// Character character(originPoint);
 
 	// input handler
-	InputHandler inputs = InputHandler();
+	InputHandler input = InputHandler();
 
-	// command storage
-	Command *commands[COMMAND_COUNT];
-	int cmdIndex = 0;
-	int cmdEndex = 0;
+	// level settings
+	int movesRemaining = 32;
+	// Command *commands[COMMAND_COUNT];
+	// int cmdIndex = 0;
+	// int cmdEndex = 0;
+
+	// setup story manager
+	StoryManager storyManager = StoryManager(originPoint, movesRemaining);
 
 	// game loop
 	while (!WindowShouldClose()) // run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
 		//	-	-	-	-	-	-	-	-	UPDATE	-	-	-	-	-	-	-	-
-		if (character.isMoving)
-		{
-			character.move();
-		}
-		else if (character.movesRemaining > 0)
-		{
-			Command *command = inputs.handleInput();
-			if (command)
-			{
-				command->execute(&character);
-
-				commands[cmdIndex++] = command;
-				if (cmdIndex > cmdEndex)
-				{
-					// ensure we know how high the commands go
-					cmdEndex = cmdIndex;
-				}
-				else if (cmdIndex < cmdEndex)
-				{
-					// we must remove all higher up commands
-					for (int i = cmdIndex; i < cmdEndex; i++)
-					{
-						commands[i] = nullptr;
-					}
-				}
-			}
-
-			//	check for undo and redo
-			if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_Z) && cmdIndex > 0)
-			{
-				Command *undoCommand = commands[--cmdIndex];
-				if (undoCommand)
-				{
-					undoCommand->undo(&character);
-				}
-			}
-			else if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_Y) && cmdIndex < cmdEndex)
-			{
-				Command *redoCommand = commands[cmdIndex++];
-				if (redoCommand)
-				{
-					redoCommand->execute(&character);
-				}
-			}
-		}
+		storyManager.update(&input);
 
 		// drawing
 		BeginDrawing();
@@ -118,7 +79,7 @@ int main()
 		ClearBackground(DARKGREEN);
 
 		BeginMode3D(mainCamera);
-		DrawCube(character.getPosition(), gridSize, gridSize, gridSize, PURPLE);
+		storyManager.draw(gridSize);
 		DrawGrid(10, 1.0f);
 		EndMode3D();
 
@@ -130,7 +91,7 @@ int main()
 		DrawText(debugText, 20, 20, 20, LIGHTGRAY);
 
 		DrawFPS(20, 40);
-		sprintf(moveText, "Moves Remaining: %d", character.movesRemaining);
+		sprintf(moveText, "Moves Remaining: %d", storyManager.movesRemaining());
 		DrawText(moveText, 20, 60, 20, WHITE);
 
 		// end the frame and get ready for the next one  (display frame, poll input, etc...)

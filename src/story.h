@@ -8,9 +8,12 @@ class Story
 {
 public:
   Story(Character *character, int startIndex);
+  void update();
   void append(int index, Command *cmd);
-  void undo(int index);
-  void redo(int index);
+  int undo(int index);
+  int redo(int index);
+  bool readyToMove();
+  //  TODO: splitting/rejoining actors
 
 private:
   std::vector<Command *> commands;

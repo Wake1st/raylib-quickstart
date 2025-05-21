@@ -8,7 +8,10 @@ class InputHandler
 public:
   InputHandler();
   ~InputHandler() {}
+  bool requestingUndo();
+  bool requestingRedo();
   Command *handleInput();
+  //  TODO: splitting/rejoining actors
 
 private:
   Command *moveLeft;

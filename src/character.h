@@ -12,7 +12,7 @@ public:
   bool isMoving;
   int movesRemaining;
 
-  Character(Vector3 origin, int totalMoves);
+  Character(Vector3 origin);
   void adjustPosition(float x, float y);
   void move();
   Vector3 getPosition();

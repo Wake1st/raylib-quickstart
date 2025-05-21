@@ -7,6 +7,14 @@ Story::Story(Character *character, int startIndex)
   end = startIndex;
 }
 
+void Story::update()
+{
+  if (actor->isMoving)
+  {
+    actor->move();
+  }
+}
+
 void Story::append(int index, Command *command)
 {
   command->execute(actor);
@@ -22,24 +30,35 @@ void Story::append(int index, Command *command)
   }
 }
 
-void Story::undo(int index)
+int Story::undo(int index)
 {
   if (Story::withinBounds(index))
   {
     int i = index - start;
     Command *command = commands.at(i);
     command->undo(actor);
+
+    return 1;
   }
+  return 0;
 }
 
-void Story::redo(int index)
+int Story::redo(int index)
 {
   if (Story::withinBounds(index))
   {
     int i = index - start;
     Command *command = commands.at(i);
     command->execute(actor);
+
+    return 1;
   }
+  return 0;
+}
+
+bool Story::readyToMove()
+{
+  return !actor->isMoving;
 }
 
 bool Story::withinBounds(int i)
