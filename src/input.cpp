@@ -10,6 +10,21 @@ InputHandler::InputHandler()
   moveDown = new MoveCommand(0.0, -GRID_SIZE);
 }
 
+Command *InputHandler::handleInput()
+{
+  if (IsKeyDown(KEY_LEFT))
+    return moveLeft;
+  if (IsKeyDown(KEY_RIGHT))
+    return moveRight;
+  if (IsKeyDown(KEY_UP))
+    return moveUp;
+  if (IsKeyDown(KEY_DOWN))
+    return moveDown;
+
+  // nothing pressed
+  return NULL;
+}
+
 bool InputHandler::requestingUndo()
 {
   return IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_Z);
@@ -25,17 +40,7 @@ bool InputHandler::requestingSplit()
   return IsKeyDown(KEY_SPACE);
 }
 
-Command *InputHandler::handleInput()
+bool InputHandler::requestingSwap()
 {
-  if (IsKeyDown(KEY_LEFT))
-    return moveLeft;
-  if (IsKeyDown(KEY_RIGHT))
-    return moveRight;
-  if (IsKeyDown(KEY_UP))
-    return moveUp;
-  if (IsKeyDown(KEY_DOWN))
-    return moveDown;
-
-  // nothing pressed
-  return NULL;
+  return IsKeyDown(KEY_TAB);
 }

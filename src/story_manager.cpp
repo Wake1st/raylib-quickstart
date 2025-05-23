@@ -4,7 +4,7 @@
 
 StoryManager::StoryManager(Vector3 startingPoint, int availableMoves)
 {
-  currentIndex = 0;
+  turnIndex = 0;
   totalMoves = availableMoves;
 
   StoryManager::createNewActor(startingPoint);
@@ -28,30 +28,34 @@ void StoryManager::update(InputHandler *input)
   }
 
   // move the current character
-  if (currentStory->readyToMove() && sufficientMovesLeft())
+  if (currentStory->readyToMove())
   {
     // handle the input types
     Command *command = input->handleInput();
-    if (command)
+    if (command && sufficientMovesLeft())
     {
-      currentStory->append(currentIndex, command);
+      currentStory->append(turnIndex, command);
       StoryManager::redo(true);
-      currentIndex++;
+      turnIndex++;
       usedMoves++;
     }
     else if (input->requestingUndo())
     {
-      currentIndex--;
+      turnIndex--;
       StoryManager::undo();
     }
     else if (input->requestingRedo())
     {
       StoryManager::redo();
-      currentIndex++;
+      turnIndex++;
     }
     else if (input->requestingSplit())
     {
       StoryManager::createNewActor(currentStory->getActorPosition());
+    }
+    else if (input->requestingSwap())
+    {
+      StoryManager::swapActor();
     }
   }
 }
@@ -70,11 +74,16 @@ int StoryManager::movesRemaining()
   return totalMoves - usedMoves;
 }
 
+bool StoryManager::sufficientMovesLeft()
+{
+  return totalMoves - usedMoves > 0;
+}
+
 void StoryManager::undo()
 {
   for (Story *story : stories)
   {
-    usedMoves -= story->undo(currentIndex);
+    usedMoves -= story->undo(turnIndex);
   }
 }
 
@@ -85,14 +94,9 @@ void StoryManager::redo(bool skipStory)
     // ensure we don't move the current story
     if (!(skipStory && story == currentStory))
     {
-      usedMoves += story->redo(currentIndex);
+      usedMoves += story->redo(turnIndex);
     }
   }
-}
-
-bool StoryManager::sufficientMovesLeft()
-{
-  return totalMoves - usedMoves > 0;
 }
 
 void StoryManager::createNewActor(Vector3 position)
@@ -100,7 +104,18 @@ void StoryManager::createNewActor(Vector3 position)
   Character *actor = new Character(position);
   actors.push_back(actor);
 
-  currentStory = new Story(actor, currentIndex);
+  currentStory = new Story(actor, turnIndex);
   stories.push_back(currentStory);
-  storyCount++;
+  storyIndex = storyCount++;
+}
+
+void StoryManager::swapActor()
+{
+  // itterate and ensure bounded
+  if (++storyIndex >= stories.size())
+  {
+    storyIndex = 0;
+  }
+
+  currentStory = stories.at(storyIndex);
 }

@@ -17,13 +17,16 @@ private:
   std::vector<Character *> actors;
   std::vector<Story *> stories;
   Story *currentStory;
+  int storyIndex;
   int storyCount;
+
+  int turnIndex;
   int totalMoves;
   int usedMoves = 0;
-  int currentIndex;
 
+  bool sufficientMovesLeft();
   void undo();
   void redo(bool skipStory = false);
-  bool sufficientMovesLeft();
   void createNewActor(Vector3 position);
+  void swapActor();
 };

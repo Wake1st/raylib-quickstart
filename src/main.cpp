@@ -58,7 +58,7 @@ int main()
 	InputHandler input = InputHandler();
 
 	// level settings
-	int movesRemaining = 32;
+	int movesRemaining = 4;
 	// Command *commands[COMMAND_COUNT];
 	// int cmdIndex = 0;
 	// int cmdEndex = 0;

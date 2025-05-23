@@ -11,6 +11,7 @@ public:
   bool requestingUndo();
   bool requestingRedo();
   bool requestingSplit();
+  bool requestingSwap();
   Command *handleInput();
 
 private:
