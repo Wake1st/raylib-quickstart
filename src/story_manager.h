@@ -8,6 +8,7 @@ class StoryManager
 {
 public:
   StoryManager(Vector3 startingPoint, int availableMoves);
+  ~StoryManager();
   void update(InputHandler *input);
   void draw(float gridSize);
   int movesRemaining();
@@ -18,7 +19,7 @@ private:
   Story *currentStory;
   int storyCount;
   int totalMoves;
-  int usedMoves;
+  int usedMoves = 0;
   int currentIndex;
 
   void undo();

@@ -18,7 +18,8 @@ void Story::update()
 void Story::append(int index, Command *command)
 {
   command->execute(actor);
-  commands.push_back(command);
+  commands.insert(commands.begin() + index, command);
+  end = commands.size() - 1;
 
   if (index > end)
   {
@@ -26,7 +27,7 @@ void Story::append(int index, Command *command)
   }
   else if (index < end)
   {
-    Story::removeFrom(index);
+    Story::removeFrom(index + 1);
   }
 }
 

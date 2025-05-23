@@ -17,7 +17,7 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 #include "input.h"
 #include "story_manager.h"
 
-#include "resource_dir.h" // utility header for SearchAndSetResourceDir
+// #include "resource_dir.h" // utility header for SearchAndSetResourceDir
 
 inline const char *const BoolToString(bool b)
 {
@@ -33,7 +33,7 @@ int main()
 	InitWindow(1280, 800, "Hello Raylib");
 
 	// Utility function from resource_dir.h to find the resources folder and set it as the current working directory so we can load from it
-	SearchAndSetResourceDir("resources");
+	// SearchAndSetResourceDir("resources");
 
 	// setup text
 	char moveText[20];

@@ -4,23 +4,31 @@
 
 StoryManager::StoryManager(Vector3 startingPoint, int availableMoves)
 {
-  Character *actor = &Character(startingPoint);
+  Character *actor = new Character(startingPoint);
   actors.push_back(actor);
 
   currentIndex = 0;
-  currentStory = &Story(actor, currentIndex);
+  currentStory = new Story(actor, currentIndex);
   stories.push_back(currentStory);
   storyCount++;
 
   totalMoves = availableMoves;
 }
 
+StoryManager::~StoryManager()
+{
+  for (Character *actor : actors)
+  {
+    delete actor;
+  }
+  actors.clear();
+}
+
 void StoryManager::update(InputHandler *input)
 {
   // loop through every character to move
-  for (int i = 0; i < storyCount; i++)
+  for (Story *story : stories)
   {
-    Story *story = stories.at(i);
     story->update();
   }
 
@@ -52,9 +60,8 @@ void StoryManager::update(InputHandler *input)
 void StoryManager::draw(float gridSize)
 {
   // loop through every character to move
-  for (int i = 0; i < storyCount; i++)
+  for (Character *actor : actors)
   {
-    Character *actor = actors.at(i);
     DrawCube(actor->getPosition(), gridSize, gridSize, gridSize, PURPLE);
   }
 }
@@ -66,23 +73,20 @@ int StoryManager::movesRemaining()
 
 void StoryManager::undo()
 {
-  for (int i = 0; i < storyCount; i++)
+  for (Story *story : stories)
   {
-    Story *story = stories.at(i);
-    usedMoves += story->undo(currentIndex);
+    usedMoves -= story->undo(currentIndex);
   }
 }
 
-void StoryManager::redo(bool skipStory = false)
+void StoryManager::redo(bool skipStory)
 {
-  for (int i = 0; i < storyCount; i++)
+  for (Story *story : stories)
   {
-    Story *story = stories.at(i);
-
     // ensure we don't move the current story
     if (!(skipStory && story == currentStory))
     {
-      usedMoves -= story->redo(currentIndex);
+      usedMoves += story->redo(currentIndex);
     }
   }
 }
