@@ -13,6 +13,7 @@ public:
   int undo(int index);
   int redo(int index);
   bool readyToMove();
+  Vector3 getActorPosition();
   //  TODO: splitting/rejoining actors
 
 private:

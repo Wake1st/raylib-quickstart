@@ -62,6 +62,11 @@ bool Story::readyToMove()
   return !actor->isMoving;
 }
 
+Vector3 Story::getActorPosition()
+{
+  return actor->getPosition();
+}
+
 bool Story::withinBounds(int i)
 {
   return start <= i && i <= end;

@@ -4,15 +4,10 @@
 
 StoryManager::StoryManager(Vector3 startingPoint, int availableMoves)
 {
-  Character *actor = new Character(startingPoint);
-  actors.push_back(actor);
-
   currentIndex = 0;
-  currentStory = new Story(actor, currentIndex);
-  stories.push_back(currentStory);
-  storyCount++;
-
   totalMoves = availableMoves;
+
+  StoryManager::createNewActor(startingPoint);
 }
 
 StoryManager::~StoryManager()
@@ -40,9 +35,9 @@ void StoryManager::update(InputHandler *input)
     if (command)
     {
       currentStory->append(currentIndex, command);
-      usedMoves++;
       StoryManager::redo(true);
       currentIndex++;
+      usedMoves++;
     }
     else if (input->requestingUndo())
     {
@@ -53,6 +48,10 @@ void StoryManager::update(InputHandler *input)
     {
       StoryManager::redo();
       currentIndex++;
+    }
+    else if (input->requestingSplit())
+    {
+      StoryManager::createNewActor(currentStory->getActorPosition());
     }
   }
 }
@@ -94,4 +93,14 @@ void StoryManager::redo(bool skipStory)
 bool StoryManager::sufficientMovesLeft()
 {
   return totalMoves - usedMoves > 0;
+}
+
+void StoryManager::createNewActor(Vector3 position)
+{
+  Character *actor = new Character(position);
+  actors.push_back(actor);
+
+  currentStory = new Story(actor, currentIndex);
+  stories.push_back(currentStory);
+  storyCount++;
 }

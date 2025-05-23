@@ -20,6 +20,11 @@ bool InputHandler::requestingRedo()
   return IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_Y);
 }
 
+bool InputHandler::requestingSplit()
+{
+  return IsKeyDown(KEY_SPACE);
+}
+
 Command *InputHandler::handleInput()
 {
   if (IsKeyDown(KEY_LEFT))

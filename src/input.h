@@ -10,8 +10,8 @@ public:
   ~InputHandler() {}
   bool requestingUndo();
   bool requestingRedo();
+  bool requestingSplit();
   Command *handleInput();
-  //  TODO: splitting/rejoining actors
 
 private:
   Command *moveLeft;

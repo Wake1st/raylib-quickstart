@@ -25,4 +25,5 @@ private:
   void undo();
   void redo(bool skipStory = false);
   bool sufficientMovesLeft();
+  void createNewActor(Vector3 position);
 };
