@@ -37,10 +37,10 @@ bool InputHandler::requestingRedo()
 
 bool InputHandler::requestingSplit()
 {
-  return IsKeyDown(KEY_SPACE);
+  return IsKeyPressed(KEY_SPACE);
 }
 
 bool InputHandler::requestingSwap()
 {
-  return IsKeyDown(KEY_TAB);
+  return IsKeyPressed(KEY_TAB);
 }

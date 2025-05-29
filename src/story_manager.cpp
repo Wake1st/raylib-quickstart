@@ -107,6 +107,11 @@ void StoryManager::createNewActor(Vector3 position)
   currentStory = new Story(actor, turnIndex);
   stories.push_back(currentStory);
   storyIndex = storyCount++;
+
+  if (currentStory != stories.back())
+  {
+    int pain;
+  }
 }
 
 void StoryManager::swapActor()
