@@ -17,12 +17,7 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 #include "input.h"
 #include "story_manager.h"
 
-// #include "resource_dir.h" // utility header for SearchAndSetResourceDir
-
-inline const char *const BoolToString(bool b)
-{
-	return b ? "true" : "false";
-}
+#include "dev/debug_text.h"
 
 int main()
 {
@@ -31,13 +26,6 @@ int main()
 
 	// Create the window and OpenGL context
 	InitWindow(1280, 800, "Hello Raylib");
-
-	// Utility function from resource_dir.h to find the resources folder and set it as the current working directory so we can load from it
-	// SearchAndSetResourceDir("resources");
-
-	// setup text
-	char moveText[20];
-	char debugText[64];
 
 	// setup a 3D camera
 	Vector3 originPoint = Vector3{0.0f, 0.0f, 0.0f};
@@ -51,17 +39,11 @@ int main()
 	// grid settings
 	float gridSize = 2.0f;
 
-	// // create a character
-	// Character character(originPoint);
-
 	// input handler
 	InputHandler input = InputHandler();
 
 	// level settings
 	int movesRemaining = 4;
-	// Command *commands[COMMAND_COUNT];
-	// int cmdIndex = 0;
-	// int cmdEndex = 0;
 
 	// setup story manager
 	StoryManager storyManager = StoryManager(originPoint, movesRemaining);
@@ -84,15 +66,9 @@ int main()
 		EndMode3D();
 
 		// draw some text using the default font
-		sprintf(debugText, "ctrl: %s\tz: %s\ty: %s",
-						BoolToString(IsKeyDown(KEY_LEFT_CONTROL)),
-						BoolToString(IsKeyDown(KEY_Z)),
-						BoolToString(IsKeyDown(KEY_Y)));
-		DrawText(debugText, 20, 20, 20, LIGHTGRAY);
-
 		DrawFPS(20, 40);
-		sprintf(moveText, "Moves Remaining: %d", storyManager.movesRemaining());
-		DrawText(moveText, 20, 60, 20, WHITE);
+		draw_input_controls();
+		draw_story_manager_data(&storyManager);
 
 		// end the frame and get ready for the next one  (display frame, poll input, etc...)
 		EndDrawing();
