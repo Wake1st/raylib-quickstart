@@ -1,10 +1,18 @@
 #include "character.h"
 
+#define CHARACTER_HEIGHT 1.0f
+
 Character::Character(Vector3 origin)
 {
   currentPosition = origin;
+  currentPosition.y = CHARACTER_HEIGHT;
   targetPosition = origin;
   isMoving = false;
+}
+
+void Character::draw(float gridSize)
+{
+  DrawCube(currentPosition, gridSize, gridSize, gridSize, PURPLE);
 }
 
 void Character::adjustPosition(float x, float y)

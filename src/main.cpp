@@ -17,6 +17,8 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 #include "input.h"
 #include "story_manager.h"
 
+#include "level.h"
+
 #include "dev/debug_text.h"
 
 int main()
@@ -47,6 +49,7 @@ int main()
 
 	// setup story manager
 	StoryManager storyManager = StoryManager(originPoint, movesRemaining);
+	Level level = Level(gridSize);
 
 	// game loop
 	while (!WindowShouldClose()) // run the loop untill the user presses ESCAPE or presses the Close button on the window
@@ -62,7 +65,7 @@ int main()
 
 		BeginMode3D(mainCamera);
 		storyManager.draw(gridSize);
-		DrawGrid(10, 1.0f);
+		level.draw(gridSize);
 		EndMode3D();
 
 		// draw some text using the default font

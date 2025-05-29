@@ -2,6 +2,8 @@
 #include "raylib.h"
 #include "input.h"
 
+#define GRID_SIZE 2.0f
+
 InputHandler::InputHandler()
 {
   moveLeft = new MoveCommand(-GRID_SIZE, 0.0);

@@ -13,6 +13,7 @@ public:
   int movesRemaining;
 
   Character(Vector3 origin);
+  void draw(float gridSize);
   void adjustPosition(float x, float y);
   void move();
   Vector3 getPosition();

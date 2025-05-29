@@ -3,7 +3,6 @@
 #include "raylib.h"
 #include "character.h"
 
-#define GRID_SIZE 2.0f
 #define COMMAND_COUNT 64
 
 // base class

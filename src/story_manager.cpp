@@ -65,7 +65,7 @@ void StoryManager::draw(float gridSize)
   // loop through every character to move
   for (Character *actor : actors)
   {
-    DrawCube(actor->getPosition(), gridSize, gridSize, gridSize, PURPLE);
+    actor->draw(gridSize);
   }
 }
 
